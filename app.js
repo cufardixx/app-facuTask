@@ -58,7 +58,7 @@ app.delete("/api/tasks/:id", function(req, res) {
     Task.findByIdAndDelete(id).then((deletedTask)=>{
       res.status(200).json({ok: true, data:deletedTask})
     }).catch((err)=>{
-      res.status(400).json({ok: false, message: "Error en eliminar tarea"})
+      res.status(400).json({ok: false, message: "Error en eliminar tarea!"})
     })
   });
 
