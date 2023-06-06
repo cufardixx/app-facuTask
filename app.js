@@ -73,7 +73,7 @@ app.put("/api/tasks/:id", function(req, res) {
     }).then((updateTask)=>{
       res.status(200).json({ok:true, data: updateTask})
     }).catch(()=>{
-      res.status(400).json({ok:false, message: "Error al editar tarea"})
+      res.status(400).json({ok:false, message: "Error al editar tarea!"})
     })
   });
 
