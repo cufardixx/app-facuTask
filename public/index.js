@@ -2,10 +2,16 @@ const  createEditBtn = document.querySelector("#create-task")
 const   input = document.querySelector("#name-task")
 const   taskBox = document.querySelector("#task-box")
 
-const baseUrl = "http://localhost:4000/api"
+//deploy en render.com ver la propiedad Origin del objeto WINDOWS 
+//const baseUrl = "http://localhost:4000/api" ahora usamos
+const baseUrl = `${window.origin}/api`
+
 
 //variablo global
 let TASK_TO_EDIT = null
+
+
+
 
 
 createEditBtn.addEventListener("click",(e)=>{
