@@ -5,7 +5,7 @@ const PORT = process.env.PORT
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-app.use(express.static('public'))
+app.use(express.static('public', {extensions: ["html", "css", "js"]}))
 
 app.use(express.json())
 
