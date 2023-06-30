@@ -4,6 +4,7 @@ const app = express()
 const PORT = process.env.PORT
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
+const trasporter = require('./helpers/mailer')
 
 app.use(express.static('public', {extensions: ["html", "css", "js"]}))
 
@@ -23,8 +24,59 @@ const taskSchema = new Schema({
     fecha: String,
 })
 
+const userSchema = new Schema({
+  firstName: String,
+  lastName: String,
+  email: String,
+  login_code: String,
+})
+
 //Generar la coleccion(Task) que va a almacenar documentos(task)
 const Task = mongoose.model("Task", taskSchema)
+
+const User = mongoose.model("User", userSchema)
+
+app.post("/api/auth/login/:email/code", async function(req,res){
+  const { email } = req.params 
+  const user = await User.findOne({email})
+
+  if(!user){
+    //await User.create({email, firstName: "facundo", lastName: "picia"})
+    return res.status(400).json({ ok: false, message: "No existe usuario con ese email" });
+  }
+  let code = ""
+  for (let index = 0; index <= 5; index++) {
+    let character = Math.ceil(Math.random()*9)
+    code += character
+  }
+  console.log(code);
+  user.login_code = code
+  await user.save()
+
+  const result = await trasporter.sendMail({
+    from: `App Tareas ${process.env.EMAIL}`,
+    to: email,
+    subject: "Código de inicio de sesión: " + code,
+    body: "Este es tu codigo para iniciar sesion!",
+  })
+  res.status(200).json({ok: true, message: "Codigo enviado con exito!"})
+})
+
+
+app.post("/api/auth/login/:email", async function(req,res){
+  const { email } = req.params 
+  const { code } = req.body
+
+  const user = await User.findOne({email, login_code: code})
+
+  if(!user){
+    //await User.create({email, firstName: "facundo", lastName: "picia"})
+    return res.status(400).json({ ok: false, message: "Credenciales invalidas" });
+  }
+
+  
+  res.status(200).json({ok: true, message: "Inicio de sesión!"})
+})
 
 
 //configuracion de ruta tipo POST en un middelware
